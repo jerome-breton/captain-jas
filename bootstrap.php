@@ -39,3 +39,9 @@ spl_autoload_register(function ($class) {
         require $file;
     }
 });
+
+define('JAS_ROOT', dirname(__FILE__));
+
+if(!defined('DS')) {
+    define('DS', DIRECTORY_SEPARATOR);
+}

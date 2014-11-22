@@ -49,7 +49,7 @@ class Message extends \CaptainJas\Hook\Gitlab
     protected function _processPush($data)
     {
         if (empty($data)) {
-            return new \CaptainJas\Utils\Message();
+            return false;
         }
 
         $message = 'New push from <i>' . $data['user_name'] . '</i> in <b>' . str_replace('refs/heads/', '', $data['ref']) . '</b><code>';
@@ -132,7 +132,7 @@ class Message extends \CaptainJas\Hook\Gitlab
     protected function _processMergeRequest($data)
     {
         if (empty($data)) {
-            return new \CaptainJas\Utils\Message();
+            return false;
         }
 
         //Create merge url from last commit url

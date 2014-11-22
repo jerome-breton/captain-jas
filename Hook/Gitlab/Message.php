@@ -1,5 +1,5 @@
 <?php
-namespace CaptainJas\Hook;
+namespace CaptainJas\Hook\Gitlab;
 
 class Message extends \CaptainJas\Hook\Gitlab
 {

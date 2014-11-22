@@ -1,15 +1,12 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: jerome
- * Date: 22/11/14
- * Time: 09:57
+ *
  */
 
 namespace CaptainJas\Sender;
 
 
-class Hall {
+class Hall extends SenderAbstract{
 
     protected $_roomUrl;
     protected $_botName;
@@ -37,16 +34,16 @@ class Hall {
      *   <strong>
      *   <track>  kind, label, src, srclang
      *
-     * @param  array    $message array('text' => to send, 'title' => to append to botName, 'icon' => replacing default botIcon)
+     * @param  \CaptainJas\Utils\Message    $message
      * @return null
      */
-    public function send($message){
-        if(!empty($message['text'])) {
+    public function send(\CaptainJas\Utils\Message $message){
+        if($message->getText()) {
 
             $data = array(
-                'title' => $this->_botName . (empty($message['title']) ? '' : ' - ' . $title),
-                'message' => $message['text'],
-                'picture' => empty($message['icon']) ? $this->_botIcon : $message['icon']
+                'title' => $this->_botName . ($message->getTitle()) ? ' - ' . $title : ''),
+                'message' => $message->getText(),
+                'picture' => empty($message->getIcon()) ? $this->_botIcon : $message->getIcon()
             );
 
             $options = array(

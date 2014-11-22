@@ -1,47 +1,8 @@
 <?php
 namespace CaptainJas\Hook;
 
-abstract class Gitlab extends HookAbstract
+class Gitlab\Message extends Gitlab
 {
-    //Processes the event
-    public function process()
-    {
-        $request = $this->_getRequest();
-
-        //_processPush, _processMergeRequest, _processIssue...
-        $methodName = '_process' . str_replace(' ', '', ucwords(str_replace('_', ' ', $request['object_kind'])));
-        if (is_callable(array($this, $methodName))) {
-            return $this->$methodName($request['object_attributes']);
-        }
-        return false;
-    }
-
-    /**
-     * Gets GitLab hook data from the request body
-     *
-     * Push requests are reformatted to have the same strcture of other objects
-     *
-     * @return array
-     */
-    protected function _getRequest()
-    {
-        if (!empty($_GET['debug'])) {
-            $body = $_GET['debug'];
-        } else {
-            $body = @file_get_contents('php://input');
-        }
-        $request = json_decode($body, true);
-
-        if (empty($request['object_kind'])) {
-            $request = array(
-                'object_kind' => 'push',
-                'object_attributes' => $request
-            );
-        }
-
-        return $request;
-    }
-
     /**
      * Process push body messages
      * {
@@ -85,7 +46,20 @@ abstract class Gitlab extends HookAbstract
      * @param  array $data GitLab request object attributes
      * @return array   $message Message to send
      */
-    abstract protected function _processPush($data)
+    protected function _processPush($data)
+    {
+        if (empty($data)) {
+            return new \CaptainJas\Utils\Message();
+        }
+
+        $message = 'New push from <i>' . $data['user_name'] . '</i> in <b>' . str_replace('refs/heads/', '', $data['ref']) . '</b><code>';
+        foreach ($data['commits'] as $commit) {
+            $message .= $this->_displayCommit($commit);
+        }
+        $message .= '</code>';
+
+        return new \CaptainJas\Utils\Message($message);
+    }
 
     /**
      * Process merge body messages
@@ -139,14 +113,40 @@ abstract class Gitlab extends HookAbstract
      * @param  array $data GitLab request object attributes
      * @return array $message Message to send
      */
-    abstract protected function _processMergeRequest($data)
+    protected function _processMergeRequest($data)
+    {
+        if (empty($data)) {
+            return new \CaptainJas\Utils\Message();
+        }
+
+        //Create merge url from last commit url
+        $mergeUrl = $this->_getProjectUrlFromCommitUrl($data['last_commit']['url']) . '/merge_requests/' . $data['iid'];
+
+        $message = 'Merge request </i><a href="' . $mergeUrl . '">#' . $data['iid'] . '</a></i> <b>' . $data['source_branch'] . ' &#10142; ' . $data['target_branch'] . '</b> ';
+        if ($data['merge_status'] == 'unchecked') {
+            $message .= 'as been <b>created</b>.';
+        } else {
+            $message .= 'is now <b>' . $data['state'] . '</b>.';
+        }
+
+        //$message .= '<code>' . $this->_displayCommit($data['last_commit']) . '</code>';
+
+        return new \CaptainJas\Utils\Message($message);
+    }
 
     /**
-     * @param $data
+     * Return the HTML of a commit
+     *
+     * @param array $commit
+     * @param int $namePad  pad and truncate names to this length
      * @return string
      */
-    protected function _getProjectUrlFromCommitUrl($commitUrl)
+    protected function _displayCommit($commit, $namePad = 20)
     {
-        return substr($commitUrl, 0, strpos($commitUrl, '/commits/'));
+        return '<br>' . join(' ', array(
+            '<a href="' . $commit['url'] . '" target="gitlabhall">' . substr($commit['id'], 0, 6) . '</a>',
+            '<i>' . substr(str_pad($commit['author']['name'], $namePad), 0, $namePad) . '</i>',
+            $commit['message']
+        ));
     }
 }

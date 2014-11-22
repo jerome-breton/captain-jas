@@ -1,7 +1,7 @@
 <?php
 namespace CaptainJas\Hook;
 
-class Gitlab\Message extends Gitlab
+class Message extends CaptainJas\Hook\Gitlab
 {
     /**
      * Process push body messages
@@ -59,6 +59,22 @@ class Gitlab\Message extends Gitlab
         $message .= '</code>';
 
         return new \CaptainJas\Utils\Message($message);
+    }
+
+    /**
+     * Return the HTML of a commit
+     *
+     * @param array $commit
+     * @param int $namePad pad and truncate names to this length
+     * @return string
+     */
+    protected function _displayCommit($commit, $namePad = 20)
+    {
+        return '<br>' . join(' ', array(
+            '<a href="' . $commit['url'] . '" target="gitlabhall">' . substr($commit['id'], 0, 6) . '</a>',
+            '<i>' . substr(str_pad($commit['author']['name'], $namePad), 0, $namePad) . '</i>',
+            $commit['message']
+        ));
     }
 
     /**
@@ -132,21 +148,5 @@ class Gitlab\Message extends Gitlab
         //$message .= '<code>' . $this->_displayCommit($data['last_commit']) . '</code>';
 
         return new \CaptainJas\Utils\Message($message);
-    }
-
-    /**
-     * Return the HTML of a commit
-     *
-     * @param array $commit
-     * @param int $namePad  pad and truncate names to this length
-     * @return string
-     */
-    protected function _displayCommit($commit, $namePad = 20)
-    {
-        return '<br>' . join(' ', array(
-            '<a href="' . $commit['url'] . '" target="gitlabhall">' . substr($commit['id'], 0, 6) . '</a>',
-            '<i>' . substr(str_pad($commit['author']['name'], $namePad), 0, $namePad) . '</i>',
-            $commit['message']
-        ));
     }
 }

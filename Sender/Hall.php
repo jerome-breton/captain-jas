@@ -6,7 +6,7 @@
  * Time: 09:57
  */
 
-namespace Sender;
+namespace CaptainJas\Sender;
 
 
 class Hall {
@@ -37,18 +37,16 @@ class Hall {
      *   <strong>
      *   <track>  kind, label, src, srclang
      *
-     * @param  array    $message array(Message to send, Title to append to botName, Icon replacing default botIcon)
+     * @param  array    $message array('text' => to send, 'title' => to append to botName, 'icon' => replacing default botIcon)
      * @return null
      */
     public function send($message){
-        list($text, $title, $icon) = $message;
-
-        if($text) {
+        if(!empty($message['text'])) {
 
             $data = array(
-                'title' => $this->_botName . ($title ? ' - ' . $title : ''),
-                'message' => $text,
-                'picture' => $icon ? $icon : $this->_botIcon
+                'title' => $this->_botName . (empty($message['title']) ? '' : ' - ' . $title),
+                'message' => $message['text'],
+                'picture' => empty($message['icon']) ? $this->_botIcon : $message['icon']
             );
 
             $options = array(
@@ -62,4 +60,4 @@ class Hall {
             $result = file_get_contents($this->_roomUrl, false, $context);
         }
     }
-} 
+}

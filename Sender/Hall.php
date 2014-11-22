@@ -41,9 +41,9 @@ class Hall extends SenderAbstract{
         if($message->getText()) {
 
             $data = array(
-                'title' => $this->_botName . ($message->getTitle()) ? ' - ' . $title : ''),
+                'title' => $this->_botName . ($message->getTitle() ? ' - ' . $message->getTitle() : ''),
                 'message' => $message->getText(),
-                'picture' => empty($message->getIcon()) ? $this->_botIcon : $message->getIcon()
+                'picture' => $message->getIcon() ? $message->getIcon() : $this->_botIcon
             );
 
             $options = array(
@@ -53,8 +53,9 @@ class Hall extends SenderAbstract{
                     'content' => json_encode($data),
                 ),
             );
+
             $context = stream_context_create($options);
-            $result = file_get_contents($this->_roomUrl, false, $context);
+            file_get_contents($this->_roomUrl, false, $context);
         }
     }
 }

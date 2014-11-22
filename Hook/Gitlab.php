@@ -85,7 +85,7 @@ abstract class Gitlab extends HookAbstract
      * @param  array $data GitLab request object attributes
      * @return array   $message Message to send
      */
-    abstract protected function _processPush($data)
+    abstract protected function _processPush($data);
 
     /**
      * Process merge body messages
@@ -139,7 +139,7 @@ abstract class Gitlab extends HookAbstract
      * @param  array $data GitLab request object attributes
      * @return array $message Message to send
      */
-    abstract protected function _processMergeRequest($data)
+    abstract protected function _processMergeRequest($data);
 
     /**
      * @param $data

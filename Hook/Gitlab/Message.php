@@ -1,7 +1,7 @@
 <?php
 namespace CaptainJas\Hook;
 
-class Message extends CaptainJas\Hook\Gitlab
+class Message extends \CaptainJas\Hook\Gitlab
 {
     /**
      * Process push body messages

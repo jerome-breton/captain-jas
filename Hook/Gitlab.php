@@ -186,7 +186,7 @@ class Gitlab
      * @param $data
      * @return string
      */
-    protected function _getProjectUrlFromCommitUrl($data)
+    protected function _getProjectUrlFromCommitUrl($commitUrl)
     {
         return substr($commitUrl, 0, strpos($commitUrl, '/commits/'));
     }

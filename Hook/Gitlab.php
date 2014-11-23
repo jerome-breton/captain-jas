@@ -1,4 +1,7 @@
 <?php
+/**
+ * Api doc http://demo.gitlab.com/help/web_hooks/web_hooks.md
+ */
 namespace CaptainJas\Hook;
 
 abstract class Gitlab extends HookAbstract

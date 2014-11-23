@@ -50,7 +50,7 @@ class Message extends Jenkins
             $message .= ' with status <b>' . $data->build->status . '</b>';
         }
 
-        if (isset($data->build->scm)) {
+        if (isset($data->build->scm) && $data->build->scm->url) {
             $message .= $this->_processScm($data->build->scm);
         }
 

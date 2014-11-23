@@ -3,9 +3,9 @@
  * Api doc : https://github.com/basecamp/bcx-api/blob/master/sections/events.md
  */
 
-namespace CaptainJas\Watcher\Basecamp;
+namespace CaptainJas\Connectors\Watcher\Basecamp;
 
-use CaptainJas\Watcher\Basecamp;
+use CaptainJas\Connectors\Watcher\Basecamp;
 
 /**
  * Basecamp Events watch class
@@ -19,7 +19,7 @@ abstract class Events extends Basecamp
         $since = $this->_getData('since');
         $responses = array();
 
-        if(is_null($since)){
+        if (is_null($since)) {
             $since = date('c');
         }
 
@@ -27,7 +27,7 @@ abstract class Events extends Basecamp
 
         $response = $this->_processEvents($events);
 
-        if(!empty($response)){
+        if (!empty($response)) {
             $responses[] = $response;
         }
 

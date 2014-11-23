@@ -9,7 +9,7 @@ use CaptainJas\Connectors\Watcher\Basecamp;
 
 /**
  * Basecamp Events watch class
- * @package CaptainJas\Watcher\Basecamp
+ * @package CaptainJas\Connectors\Watcher\Basecamp
  */
 abstract class Events extends Basecamp
 {

@@ -8,7 +8,7 @@ use CaptainJas\Connectors\Watcher;
 
 /**
  * Class Basecamp implements basic Basecamp access
- * @package CaptainJas\Watcher
+ * @package CaptainJas\Connectors\Watcher
  */
 abstract class Basecamp extends WatcherAbstract
 {

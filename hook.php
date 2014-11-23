@@ -34,7 +34,7 @@ function dieInHelp()
 {
     $demoRoomUrl = 'https://hall.com/api/1/services/generic/3fea40b404dc43f105f2593f45357dea';
     if (PHP_SAPI === 'cli') {
-        $debugUrl = 'php -f ' . __FILE__ . ' -- -qs roomurl=' . $demoRoomUrl . '&debug=';
+        $debugUrl = 'php -f ' . __FILE__ . ' -- --roomurl=' . $demoRoomUrl . ' --debug=';
     } else {
         $debugUrl = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['SCRIPT_NAME'] . '?roomurl=' . $demoRoomUrl . '&debug=';
     }

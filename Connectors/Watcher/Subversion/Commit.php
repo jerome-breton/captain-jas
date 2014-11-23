@@ -15,7 +15,9 @@ use CaptainJas\Connectors\Watcher\Subversion;
  */
 abstract class Commit extends Subversion
 {
-
+    /**
+     * @return array
+     */
     public function process()
     {
         $locks = $this->_getLocks();
@@ -51,13 +53,26 @@ abstract class Commit extends Subversion
         return $responses;
     }
 
+    /**
+     * @param $locks
+     * @return string
+     */
     protected function _getLocksHash($locks)
     {
         return md5(join('|', array_keys($locks)));
     }
 
+    /**
+     * @param $commit
+     * @return mixed
+     */
     abstract protected function _processCommit($commit);
 
+    /**
+     * @param $oldLocks
+     * @param $newLocks
+     * @return mixed
+     */
     protected function _processLocks($oldLocks, $newLocks)
     {
         $createdLocks = array_diff_key($newLocks, $oldLocks);
@@ -65,5 +80,10 @@ abstract class Commit extends Subversion
         return $this->_processLockChanges($createdLocks, $releasedLocks);
     }
 
+    /**
+     * @param $createdLocks
+     * @param $releasedLocks
+     * @return mixed
+     */
     abstract protected function _processLockChanges($createdLocks, $releasedLocks);
 }

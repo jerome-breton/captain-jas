@@ -17,14 +17,21 @@ abstract class WatcherAbstract extends HookAbstract
     private $_data = null;
     private $_file = null;
 
+    /**
+     * constructor
+     */
     public function __construct()
     {
         $this->_loadData();
         parent::__construct();
     }
 
+    /**
+     * @return $this
+     */
     private function _loadData()
     {
+        $this->_data = array();
         while ($row = fgetcsv($this->_getFile())) {
             list($key, $val) = $row;
             $this->_data[$key] = $val;
@@ -33,6 +40,9 @@ abstract class WatcherAbstract extends HookAbstract
         return $this;
     }
 
+    /**
+     * @return null|resource
+     */
     private function _getFile()
     {
         if (!$this->_file) {
@@ -46,6 +56,9 @@ abstract class WatcherAbstract extends HookAbstract
         return $this->_file;
     }
 
+    /**
+     * @return mixed
+     */
     protected function _getClass()
     {
         return str_replace('\\', '_', get_class($this));
@@ -58,6 +71,10 @@ abstract class WatcherAbstract extends HookAbstract
         fclose($this->_getFile());
     }
 
+    /**
+     * @param $key
+     * @param $val
+     */
     protected function _saveData($key, $val)
     {
         $this->_data[$key] = $val;
@@ -69,6 +86,10 @@ abstract class WatcherAbstract extends HookAbstract
         }
     }
 
+    /**
+     * @param $key
+     * @return null
+     */
     protected function _getData($key)
     {
         if (!is_array($this->_data)) {

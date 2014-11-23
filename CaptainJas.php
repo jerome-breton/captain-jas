@@ -159,7 +159,7 @@ class CaptainJas
     public function getConfig()
     {
         if (!$this->_config) {
-            $json_data = file_get_contents('config.json');
+            $json_data = file_get_contents(JAS_ROOT . DS . 'config.json');
             if ($json_data === false) {
                 throw new \RuntimeException(
                     'You must deploy a config.json file. Try to copy config.json.dist as a basis'

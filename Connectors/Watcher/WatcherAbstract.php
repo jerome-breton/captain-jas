@@ -64,6 +64,11 @@ abstract class WatcherAbstract extends HookAbstract
         return str_replace('\\', '_', get_class($this));
     }
 
+    /**
+     * The unique key that will be used for this instance state file
+     *
+     * @return string
+     */
     abstract protected function _getDataIdentifier();
 
     public function __destruct()
@@ -72,6 +77,8 @@ abstract class WatcherAbstract extends HookAbstract
     }
 
     /**
+     * Save key value in state file
+     *
      * @param $key
      * @param $val
      */
@@ -87,6 +94,8 @@ abstract class WatcherAbstract extends HookAbstract
     }
 
     /**
+     * Get key value in state file
+     *
      * @param $key
      * @return null
      */

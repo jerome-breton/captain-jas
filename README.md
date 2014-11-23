@@ -3,18 +3,18 @@ Captain Jas
 
 **A really light php hooking and watcher system to inter-operate systems.**
 
-This app is composed of connectors of three diferent types :
+This app is composed of connectors of three different types :
 - **Hooks** : Simple class intended to receive messages from a service
-- **Watchers** : Connectors to be called frenquently to pull data from a service
+- **Watchers** : Connectors to be called frequently to pull data from a service
 - **Senders** : Connectors to send data to a service
 
 Quickstart
 ----------
 
-1. Clone this repository in a PHP server. You might want to expose the \pub folder with an HTTP(S) server.
-2. Copy config.json.dist to config.json and complete it with your credentials
-3. Add a commit hook to Gitlab : http://yourserver/hook.php?hook=gitlabToHall
-4. Add a crontab job calling : php -f pub/watcher.php
+1. Clone this repository in a PHP server. You might want to expose the `/pub` folder with an HTTP(S) server.
+2. Copy `config.json.dist` to `config.json` and complete it with your credentials
+3. Add a commit hook to Gitlab : `http://yourserver/hook.php?hook=gitlabToHall`
+4. Add a crontab job calling : `php -f pub/watcher.php`
 
 In depth
 --------
@@ -69,7 +69,7 @@ and have the following structure (each section is optional) :
         - MyWatcher.php
         
 Your extensions connectors should extends CaptainJas abstract classes (found in `\CaptainJas\Connectors\*\*Abstract.php`)
-or at least respond to the same public methods.
+or at least respond to the same public methods. More on this in the framework section of this document.
             
 ####hooks section
 
@@ -133,6 +133,33 @@ string can be passed in command line :
 **watcher.php** as only one parameter `watcher` that must correspond to a watcher defined in config.json. 
 If `watcher` is ommited, then every watchers are called in sequence.
 
+Framework
+---------
+
+###HookAbstract
+
+Nothing to say for now. You must implement `process()` that will be called when hook is triggered and will
+return data for senders.
+
+###WatcherAbstract
+
+Extends HookAbstract. This class also brings you methods to save the state of a system so you can know when
+it changes, or make a diff.
+
+You must implement `_getDataIdentifier()` that will return the unique key that will be used for this 
+instance state file.
+
+You will then be able to use `_getData($key)` and `_saveData($key, $val)` to read and write data. 
+`_getData($key)` will return `null` if the key is not set. You can set a value to null to delete it via 
+`_saveData($key, null)`
+
+You must implement `process()` that will be called when watcher is triggered.
+
+###SenderAbstract
+
+Nothing to say for now. You must implement `send($data)` that will be called when hook is triggered.
+
+**Sender\Message** is an abstract class implementing a message sender.
 
 
 

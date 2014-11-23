@@ -6,6 +6,10 @@ namespace CaptainJas\Connectors\Watcher;
 
 use CaptainJas\Connectors\Watcher;
 
+/**
+ * Class Subversion
+ * @package CaptainJas\Connectors\Watcher
+ */
 abstract class Subversion extends WatcherAbstract
 {
 
@@ -19,6 +23,11 @@ abstract class Subversion extends WatcherAbstract
     protected $_svnpass;
     protected $_svnclient;
 
+    /**
+     * @param $url
+     * @param bool $user
+     * @param bool $pass
+     */
     public function __construct($url, $user = false, $pass = false)
     {
         $this->_svnurl = $url;
@@ -27,6 +36,11 @@ abstract class Subversion extends WatcherAbstract
         parent::__construct();
     }
 
+    /**
+     * @param bool $vfrom
+     * @param bool $vto
+     * @return array
+     */
     protected function _getRepositoryLogs($vfrom = false, $vto = false)
     {
         if (!$vfrom) {
@@ -86,6 +100,9 @@ abstract class Subversion extends WatcherAbstract
         return $commits;
     }
 
+    /**
+     * @return int
+     */
     protected function _getVersion()
     {
         $options = array(
@@ -105,11 +122,17 @@ abstract class Subversion extends WatcherAbstract
         return (int)$response;
     }
 
+    /**
+     * @return string
+     */
     protected function _getAuthorizationHeader()
     {
         return 'Authorization: Basic ' . base64_encode($this->_svnuser . ":" . $this->_svnpass) . "\r\n";
     }
 
+    /**
+     * @return array
+     */
     protected function _getLocks()
     {
         $options = array(
@@ -145,6 +168,9 @@ abstract class Subversion extends WatcherAbstract
         return $locks;
     }
 
+    /**
+     * @return string
+     */
     protected function _getDataIdentifier()
     {
         return md5(join('|', array($this->_svnurl, $this->_svnuser, $this->_svnpass, $this->_getClass())));

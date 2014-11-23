@@ -7,10 +7,12 @@
  */
 
 namespace CaptainJas\Connectors\Watcher\Subversion;
-
 use CaptainJas\Connectors\Watcher\Subversion;
 
-
+/**
+ * Class Commit
+ * @package CaptainJas\Connectors\Watcher\Subversion
+ */
 abstract class Commit extends Subversion
 {
 

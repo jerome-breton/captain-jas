@@ -1,6 +1,6 @@
 {
   "connectors": {
-    "jas": "CaptainJas\\Connectors"
+    "jas": "\\CaptainJas\\Connectors"
   },
   "hooks": {
     "gitlabToHall": {

@@ -3,11 +3,13 @@ namespace CaptainJas\Connectors\Hook;
 
 abstract class HookAbstract
 {
-    //Processes the event
     public function __construct()
     {
 
     }
 
+    /**
+     * Processes the event
+     */
     abstract function process();
 }

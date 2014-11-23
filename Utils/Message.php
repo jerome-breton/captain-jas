@@ -1,14 +1,10 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: jerome
- * Date: 22/11/14
- * Time: 16:31
- */
-
 namespace CaptainJas\Utils;
 
-
+/**
+ * Class Message
+ * @package CaptainJas\Utils
+ */
 class Message
 {
 
@@ -26,18 +22,30 @@ class Message
         $this->_icon = $icon;
     }
 
+    /**
+     * get message text
+     * @return bool
+     */
     public function getText()
     {
         return $this->_text;
     }
 
+    /**
+     * get message title
+     * @return bool
+     */
     public function getTitle()
     {
         return $this->_title;
     }
 
+    /**
+     * get message icon
+     * @return bool
+     */
     public function getIcon()
     {
         return $this->_icon;
     }
-} 
+}

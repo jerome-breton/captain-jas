@@ -11,11 +11,17 @@ namespace CaptainJas\Connectors\Watcher\Subversion\Commit;
 use CaptainJas\Connectors\Watcher\Subversion;
 use CaptainJas\Connectors\Watcher\Subversion\Commit;
 
-
+/**
+ * Class Message
+ * @package CaptainJas\Connectors\Watcher\Subversion\Commit
+ */
 class Message extends Commit
 {
 
-
+    /**
+     * @param $commits
+     * @return bool|\CaptainJas\Utils\Message
+     */
     protected function _processCommit($commits)
     {
         if (empty($commits)) {
@@ -104,7 +110,7 @@ class Message extends Commit
         }
         return false;
     }
-} 
+}
 
 
 

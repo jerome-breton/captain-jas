@@ -1,10 +1,21 @@
 <?php
 namespace CaptainJas;
 
+use CaptainJas\Connectors\Hook\HookAbstract;
+use CaptainJas\Connectors\Sender\SenderAbstract;
+use CaptainJas\Connectors\Watcher\WatcherAbstract;
+
+/**
+ * Main Class
+ * @package CaptainJas
+ */
 class CaptainJas
 {
     protected $_config = null;
 
+    /**
+     * constructor
+     */
     public function __construct()
     {
         $this->_registerAutoload();
@@ -58,12 +69,21 @@ class CaptainJas
         );
     }
 
+    /**
+     * Define constants
+     */
     protected function _defineConsts()
     {
         $this->_defineConst('JAS_ROOT', dirname(__FILE__));
         $this->_defineConst('DS', DIRECTORY_SEPARATOR);
     }
 
+    /**
+     * Define a constant if not already defined
+     *
+     * @param string $name Name of the const to define
+     * @param string $value Value of the const
+     */
     protected function _defineConst($name, $value)
     {
         if (!defined($name)) {
@@ -71,6 +91,12 @@ class CaptainJas
         }
     }
 
+    /**
+     * Static function to retreive a parameter from $_GET if HTTP request or from CLI parameters
+     *
+     * @param   string $key Name of the parameter
+     * @return  null|string
+     */
     static public function p($key)
     {
         if (PHP_SAPI === 'cli') {
@@ -79,28 +105,26 @@ class CaptainJas
         return isset($_GET[$key]) ? $_GET[$key] : null;
     }
 
-    public function getConfig()
-    {
-        if (!$this->_config) {
-            $json_data = file_get_contents('config.json');
-            if ($json_data === false) {
-                throw new \RuntimeException('You must deploy a config.json file. Try to copy config.json.dist as a basis');
-            }
-            $this->_config = json_decode($json_data);
-        }
-        return $this->_config;
-    }
-
+    /**
+     * @param string $ns namespace code
+     * @param string $class class to load (basecamp_events_message, subversion_commit_message,...)
+     * @param array $args params to pass to connector constructor
+     * @return HookAbstract of wanted class
+     *
+     * @throws \BadMethodCallException
+     */
     public function getHook($ns, $class = '', $args = array())
     {
         return $this->_getClass($ns, 'hook', $class, $args);
     }
 
     /**
-     * @param string $ns namespace code (jas only for now)
+     * @param string $ns namespace code
      * @param string $type type of the connector (hook, watcher, sender, ...)
      * @param string $class class to load (basecamp_events_message, subversion_commit_message,...)
      * @param array $args params to pass to connector constructor
+     * @return mixed of wanted class
+     *
      * @throws \BadMethodCallException
      */
     protected function _getClass($ns, $type, $class = '', $args = array())
@@ -109,11 +133,10 @@ class CaptainJas
             list($ns, $class) = explode('|', $ns);
         }
 
-        if ($ns != 'jas') {   //@TODO implement extension mechanism
-            throw new \BadMethodCallException('@TODO implement extension mechanism');
-        } else {
-            $namespace = '\\CaptainJas\\Connectors\\';
+        if (!isset($this->getConfig()->connectors->$ns)) {
+            throw new \BadMethodCallException($ns . ' is not a valid namespace defined in config.json');
         }
+        $namespace = $this->getConfig()->connectors->$ns;
 
         $typePath = $this->ucWords($type);
         $className = $this->ucWords($class);
@@ -129,6 +152,25 @@ class CaptainJas
     }
 
     /**
+     * @return \stdClass
+     *
+     * @throws \RuntimeException
+     */
+    public function getConfig()
+    {
+        if (!$this->_config) {
+            $json_data = file_get_contents('config.json');
+            if ($json_data === false) {
+                throw new \RuntimeException(
+                    'You must deploy a config.json file. Try to copy config.json.dist as a basis'
+                );
+            }
+            $this->_config = json_decode($json_data);
+        }
+        return $this->_config;
+    }
+
+    /**
      * @param $type
      * @return mixed
      */
@@ -137,11 +179,27 @@ class CaptainJas
         return str_replace(' ', '\\', ucwords(str_replace('_', ' ', $type)));
     }
 
+    /**
+     * @param string $ns namespace code
+     * @param string $class class to load (basecamp_events_message, subversion_commit_message,...)
+     * @param array $args params to pass to connector constructor
+     * @return WatcherAbstract of wanted class
+     *
+     * @throws \BadMethodCallException
+     */
     public function getWatcher($ns, $class, $args = array())
     {
         return $this->_getClass($ns, 'watcher', $class, $args);
     }
 
+    /**
+     * @param string $ns namespace code
+     * @param string $class class to load (basecamp_events_message, subversion_commit_message,...)
+     * @param array $args params to pass to connector constructor
+     * @return SenderAbstract of wanted class
+     *
+     * @throws \BadMethodCallException
+     */
     public function getSender($ns, $class, $args = array())
     {
         return $this->_getClass($ns, 'sender', $class, $args);

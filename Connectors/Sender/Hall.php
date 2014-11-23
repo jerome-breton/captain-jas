@@ -7,12 +7,21 @@ namespace CaptainJas\Connectors\Sender;
 
 use CaptainJas\Connectors\Sender;
 
+/**
+ * Class Hall
+ * @package CaptainJas\Connectors\Sender
+ */
 class Hall extends Message
 {
     protected $_roomUrl;
     protected $_botName;
     protected $_botIcon;
 
+    /**
+     * @param $roomUrl
+     * @param $botName
+     * @param $botIcon
+     */
     public function __construct($roomUrl, $botName, $botIcon)
     {
         $this->_roomUrl = $roomUrl;
@@ -39,7 +48,9 @@ class Hall extends Message
      * @param  \CaptainJas\Utils\Message $message
      * @return null
      */
-    public function sendOne(\CaptainJas\Utils\Message $message)
+    public function sendOne(/** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
+        \CaptainJas\Utils\Message $message
+    )
     {
         if ($message->getText()) {
 

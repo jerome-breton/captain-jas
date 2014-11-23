@@ -8,7 +8,10 @@ namespace CaptainJas\Connectors\Watcher;
 use CaptainJas\Connectors\Hook\HookAbstract;
 use CaptainJas\Connectors\Watcher;
 
-
+/**
+ * Class WatcherAbstract
+ * @package CaptainJas\Connectors\Watcher
+ */
 abstract class WatcherAbstract extends HookAbstract
 {
     private $_data = null;

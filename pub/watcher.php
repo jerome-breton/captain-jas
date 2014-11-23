@@ -4,7 +4,7 @@ namespace CaptainJas;
 use CaptainJas\Connectors\Sender\SenderAbstract;
 use CaptainJas\Connectors\Watcher\WatcherAbstract;
 
-require_once('..\CaptainJas.php');
+require_once(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'CaptainJas.php');
 $captain = new CaptainJas();
 $watchername = CaptainJas::p('watcher');
 

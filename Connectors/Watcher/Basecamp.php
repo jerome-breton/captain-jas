@@ -12,7 +12,6 @@ use CaptainJas\Connectors\Watcher;
  */
 abstract class Basecamp extends WatcherAbstract
 {
-
     protected $_accountId;
     protected $_user;
     protected $_pass;

@@ -37,7 +37,7 @@ abstract class Gitlab extends HookAbstract
         if ($debug = CaptainJas::p('debug')) {
             $body = urldecode($debug);
         } else {
-            $body = @file_get_contents('php://input');
+            $body = file_get_contents('php://input');
         }
         $request = json_decode($body, true);
 

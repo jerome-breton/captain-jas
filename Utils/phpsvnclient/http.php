@@ -45,7 +45,7 @@ class http_class {
     var $protocol_version = "1.1";
     var $timeout = 0;
     var $data_timeout = 0;
-    var $debug = 0;
+    var $debug = 1;
     var $debug_response_body = 1;
     var $html_debug = 0;
     var $support_cookies = 1;

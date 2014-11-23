@@ -15,20 +15,100 @@ abstract class Subversion extends WatcherAbstract{
     protected $_svnuser;
     protected $_svnpass;
     protected $_svnclient;
+    
+    const ACTION_ADD = 'added-path';
+    const ACTION_MOD = 'modified-path';
+    const ACTION_DEL = 'deleted-path';
+    
+    const NODE_FILE = 'file';
+    const NODE_DIR = 'dir';
 
     public function __construct($url, $user = false, $pass = false){
         $this->_svnurl = $url;
         $this->_svnuser = $user;
         $this->_svnpass = $pass;
+        parent::__construct();
+    }
+    
+    protected function _getAuthorizationHeader(){
+        return 'Authorization: Basic ' . base64_encode($this->_svnuser . ":" . $this->_svnpass) . "\r\n";
     }
 
-    private function _getClient(){
-        if(!$this->_svnclient) {
-            require_once(JAS_ROOT . DS . 'phpsvnclient' . DS . 'phpsvnclient.php');
-
-            $this->_svnclient = new phpsvnclient($this->_svnurl, $this->_svnuser, $this->_svnpass);
+    protected function _getVersion(){
+        $options = array(
+            'http' => array(
+                'header' => "Content-type: text/xml\r\n" . $this->_getAuthorizationHeader(),
+                'method' => 'PROPFIND',
+                'content' => '<?xml version="1.0" encoding="utf-8"?><propfind xmlns="DAV:"><prop><checked-in xmlns="DAV:"/></prop></propfind>',
+            ),
+        );
+        
+        $context = stream_context_create($options);
+        $response = file_get_contents($this->_svnurl . '!svn/vcc/default', false, $context);
+        $startToken = '!svn/bln/';
+        $response = substr($response, strpos($response, $startToken) + strlen($startToken));
+        $response = substr($response, 0, strpos($response, '</D:href>'));
+        
+        return (int)$response;
+    }
+    
+    protected function _getRepositoryLogs($vfrom = false, $vto = false){
+        if(!$vfrom){
+            $vfrom = $this->_getData('version');
+            if(!$vfrom){
+                $vfrom = 0;
+            }
+        }
+        
+        if(!$vto){
+            $vto = $this->_getVersion();
+        }
+        
+        $options = array(
+            'http' => array(
+                'header' => "Content-type: text/xml\r\n" . $this->_getAuthorizationHeader(),
+                'method' => 'REPORT',
+                'content' => '<?xml version="1.0" encoding="utf-8"?> <S:log-report xmlns:S="svn:"> <S:start-revision>' . $vfrom . '</S:start-revision><S:end-revision>' . $vto .'</S:end-revision><S:path></S:path><S:discover-changed-paths/></S:log-report>',
+            ),
+        );
+        
+        $context = stream_context_create($options);
+        $response = file_get_contents($this->_svnurl . '!svn/bc/' . $vto, false, $context);
+        
+        $commitsXml = simplexml_load_string($response);
+        
+        $commitItems = $commitsXml->xpath( '//S:log-item' );
+        $commits = array();
+        foreach( $commitItems as $commitItem )
+        {
+            $version = $commitItem->xpath('./D:version-name');
+            $comment = $commitItem->xpath('./D:comment');
+            $author =  $commitItem->xpath('./D:creator-displayname');
+            $date =    $commitItem->xpath('./S:date');
+            $changes = array();
+            foreach($commitItem->xpath('./*[substring(name(), string-length(name()) - 4) = \'-path\']') as $path){
+                $nodeKind = $path->xpath('@node-kind');
+                $action = str_replace('<S:', '', $path->getName());
+                $changes[] = array(
+                    'node-kind' => (string)reset($nodeKind),
+                    'action' => $action,
+                    'path' => (string)$path
+                );
+            }
+            
+            $commits[] = array(
+                'version' =>    (string)reset($version),
+                'comment' =>    (string)reset($comment),
+                'author'  =>    (string)reset($author),
+                'date'    =>    (string)reset($date),
+                'changes' =>    $changes
+            );
         }
 
-        return $this->_svnclient;
+        return $commits;
     }
-} 
+    
+    protected function _getDataIdentifier(){
+        return md5(join('|',array($this->_svnurl, $this->_svnuser, $this->_svnpass, $this->_getClass())));
+    }
+}

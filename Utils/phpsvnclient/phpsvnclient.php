@@ -130,11 +130,6 @@ class phpsvnclient {
      */
     private $mime_array;
 
-    public function phpsvnclient($url = 'http://phpsvnclient.googlecode.com/svn/', $user = false, $pass = false) {
-        $this->__construct($url, $user, $pass);
-        register_shutdown_function(array(&$this, '__destruct'));
-    }
-
     public function __construct($url = 'http://phpsvnclient.googlecode.com/svn/', $user = false, $pass = false) {
         $http = & $this->_http;
         $http = new http_class;
@@ -778,13 +773,6 @@ class phpsvnclient {
         $args['Headers']['Content-Length'] = strlen(PHPSVN_NORMAL_REQUEST);
         $args['Headers']['Depth'] = 0;
 
-        //        echo $vini."\r\n";
-//        echo $vend."\r\n";
-        echo "Args: \r\n";
-        print_r($args);
-        echo "Headers: \r\n";
-        print_r($tmp);
-
         if (!$this->Request($args, $tmp, $body)) {
             return $this->_repVersion;
         }
@@ -949,6 +937,7 @@ class phpsvnclient {
      */
     private function Request($args, &$headers, &$body) {
         $args['RequestURI'] = str_replace(' ', '%20', $args['RequestURI']); //Hack to make filenames with spaces work.
+        var_dump($args);
         $http = & $this->_http;
         $http->Open($args);
         $http->SendRequest($args);
@@ -965,8 +954,7 @@ class phpsvnclient {
                     $this->errNro = UNKNOWN_ERROR;
                     break;
             }
-//            trigger_error("request to $args[RequestURI] failed: $http->response_status
-//Error: $http->error");
+            trigger_error("request to $args[RequestURI] failed: $http->response_status Error: $http->error");
             $http->close();
             return false;
         }

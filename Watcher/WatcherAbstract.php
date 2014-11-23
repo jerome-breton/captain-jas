@@ -19,19 +19,25 @@ abstract class WatcherAbstract extends \CaptainJas\Hook\HookAbstract
 
     public function __construct(){
         $this->_loadData();
+        parent::__construct();
     }
 
-    protected function _save($key, $val){
+    protected function _saveData($key, $val){
         $this->_data[$key] = $val;
         ftruncate($this->_getFile(), 0);
+        rewind($this->_getFile());
 
         foreach($this->_data as $key => $val){
-            fputcsv($this->_getFile(), array($key, $val));
+            fputcsv($this->_getFile(), array(trim($key), trim($val)));
         }
+    }
+    
+    protected function _getData($key){
+        return isset($this->_data[$key]) ? $this->_data[$key] : null;
     }
 
     private function _loadData(){
-        while($row = fgetcsv($this->_getFile()))){
+        while($row = fgetcsv($this->_getFile())){
             list($key, $val) = $row;
             $this->_data[$key] = $val;
         }
@@ -40,16 +46,18 @@ abstract class WatcherAbstract extends \CaptainJas\Hook\HookAbstract
     }
 
     private function _getFile(){
-        if(!$_file){
-            $this->_file = fopen(join(DS, array(
-                JAS_ROOT,'var','watcher',$this->_getClass(),$this->_getDataIdentifier(),'.csv'
-            )), 'c+');
+        if(!$this->_file){
+            $dir = join(DS, array(JAS_ROOT,'var','watcher',$this->_getClass()));
+            if(!file_exists($dir)){
+                mkdir($dir, 0777, true);
+            }
+            $this->_file = fopen($dir . DS . $this->_getDataIdentifier() . '.csv', 'c+');
         }
 
         return $this->_file;
     }
 
-    private function _getClass(){
+    protected function _getClass(){
         return str_replace('\\','_',get_class($this));
     }
 }

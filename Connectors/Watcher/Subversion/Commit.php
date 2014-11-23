@@ -6,12 +6,16 @@
  * Time: 20:09
  */
 
-namespace CaptainJas\Watcher\Subversion;
+namespace CaptainJas\Connectors\Watcher\Subversion;
+
+use CaptainJas\Connectors\Watcher\Subversion;
 
 
-abstract class Commit extends \CaptainJas\Watcher\Subversion{
+abstract class Commit extends Subversion
+{
 
-    public function process(){
+    public function process()
+    {
         $locks = $this->_getLocks();
         $locksHash = $this->_getLocksHash($locks);
         $version = $this->_getVersion();
@@ -20,20 +24,20 @@ abstract class Commit extends \CaptainJas\Watcher\Subversion{
         $lastLocksHash = $this->_getData('locksHash');
         $responses = array();
 
-        if($version == $lastVersion && $locksHash == $lastLocksHash){
+        if ($version == $lastVersion && $locksHash == $lastLocksHash) {
             return $responses;
         }
 
-        if(!is_null($lastVersion)){
+        if (!is_null($lastVersion)) {
             $response = $this->_processCommit($this->_getRepositoryLogs());
-            if(!empty($response)){
+            if (!empty($response)) {
                 $responses[] = $response;
             }
         }
 
-        if(!is_null($lastLocksHash)){
+        if (!is_null($lastLocksHash)) {
             $response = $this->_processLocks($lastLocks, $locks);
-            if(!empty($response)){
+            if (!empty($response)) {
                 $responses[] = $response;
             }
         }

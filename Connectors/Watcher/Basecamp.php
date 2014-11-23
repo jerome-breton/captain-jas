@@ -2,13 +2,15 @@
 /**
  * Api doc https://github.com/basecamp/bcx-api
  */
-namespace CaptainJas\Watcher;
+namespace CaptainJas\Connectors\Watcher;
+
+use CaptainJas\Connectors\Watcher;
 
 /**
  * Class Basecamp implements basic Basecamp access
  * @package CaptainJas\Watcher
  */
-abstract class Basecamp extends \CaptainJas\Watcher\WatcherAbstract
+abstract class Basecamp extends WatcherAbstract
 {
 
     protected $_accountId;
@@ -26,8 +28,8 @@ abstract class Basecamp extends \CaptainJas\Watcher\WatcherAbstract
      * @param string $url Basecamp Url (defaults to https://basecamp.com/)
      */
     public function __construct($accountId, $projectId, $username, $password,
-        $ua = 'CaptainJas (jerome.breton@gmail.com https://github.com/jerome-breton/captain-jas/)',
-        $url = 'https://basecamp.com/'
+                                $ua = 'CaptainJas (jerome.breton@gmail.com https://github.com/jerome-breton/captain-jas/)',
+                                $url = 'https://basecamp.com/'
     )
     {
         $this->_accountId = $accountId;
@@ -74,8 +76,8 @@ abstract class Basecamp extends \CaptainJas\Watcher\WatcherAbstract
     {
         $options = array(
             'http' => array(
-                'header'  => "Content-type: text/json\r\n" . $this->_getAuthorizationHeader() . $this->_getUserAgentHeader(),
-                'method'  => $method,
+                'header' => "Content-type: text/json\r\n" . $this->_getAuthorizationHeader() . $this->_getUserAgentHeader(),
+                'method' => $method,
                 'content' => json_encode($data),
             ),
         );

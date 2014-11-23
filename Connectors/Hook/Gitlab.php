@@ -2,7 +2,9 @@
 /**
  * Api doc http://demo.gitlab.com/help/web_hooks/web_hooks.md
  */
-namespace CaptainJas\Hook;
+namespace CaptainJas\Connectors\Hook;
+
+use CaptainJas\CaptainJas;
 
 abstract class Gitlab extends HookAbstract
 {
@@ -10,13 +12,17 @@ abstract class Gitlab extends HookAbstract
     public function process()
     {
         $request = $this->_getRequest();
+        $responses = array();
 
         //_processPush, _processMergeRequest, _processIssue...
         $methodName = '_process' . str_replace(' ', '', ucwords(str_replace('_', ' ', $request['object_kind'])));
         if (is_callable(array($this, $methodName))) {
-            return array($this->$methodName($request['object_attributes']));
+            $response = $this->$methodName($request['object_attributes']);
+            if ($response) {
+                $responses[] = $response;
+            }
         }
-        return false;
+        return $responses;
     }
 
     /**
@@ -28,12 +34,13 @@ abstract class Gitlab extends HookAbstract
      */
     protected function _getRequest()
     {
-        if (!empty($_GET['debug'])) {
-            $body = $_GET['debug'];
+        if ($debug = CaptainJas::p('debug')) {
+            $body = urldecode($debug);
         } else {
             $body = @file_get_contents('php://input');
         }
         $request = json_decode($body, true);
+        var_dump($body, $request);
 
         if (empty($request['object_kind'])) {
             $request = array(
@@ -41,7 +48,6 @@ abstract class Gitlab extends HookAbstract
                 'object_attributes' => $request
             );
         }
-
         return $request;
     }
 
@@ -145,7 +151,7 @@ abstract class Gitlab extends HookAbstract
     abstract protected function _processMergeRequest($data);
 
     /**
-     * @param $data
+     * @param $commitUrl
      * @return string
      */
     protected function _getProjectUrlFromCommitUrl($commitUrl)

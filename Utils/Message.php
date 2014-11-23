@@ -26,15 +26,18 @@ class Message
         $this->_icon = $icon;
     }
 
-    public function getText(){
+    public function getText()
+    {
         return $this->_text;
     }
 
-    public function getTitle(){
+    public function getTitle()
+    {
         return $this->_title;
     }
 
-    public function getIcon(){
+    public function getIcon()
+    {
         return $this->_icon;
     }
 } 

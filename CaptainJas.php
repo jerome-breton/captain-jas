@@ -6,6 +6,7 @@ class CaptainJas
     public function __construct()
     {
         $this->_registerAutoload();
+        $this->_defineConsts();
     }
 
     /**
@@ -55,43 +56,6 @@ class CaptainJas
         );
     }
 
-    public function getHook($ns, $class)
-    {
-        $this->_getClass($ns, 'hook', $class);
-    }
-
-    /**
-     * @param $ns
-     * @param $class
-     * @throws BadMethodCallException
-     */
-    protected function _getClass($ns, $type, $class)
-    {
-        if ($ns != 'jas') {   //@TODO implement extension mecanism
-            throw new BadMethodCallException('@TODO implement extension mecanism');
-        } else {
-            $namespace = '\\CaptainJas\\';
-        }
-
-        $typepath = $this->ucWords($type);
-        $classname = $this->ucWords($class);
-
-        $fullClass = $namespace . $classname;
-
-        if (!class_exists($fullClass)) {
-            throw new BadMethodCallException('Class ' . $fullClass . ' not found.');;
-        }
-    }
-
-    /**
-     * @param $type
-     * @return mixed
-     */
-    protected function ucWords($type)
-    {
-        return str_replace(' ', '\\', ucwords(str_replace('_', ' ', $type)));
-    }
-
     protected function _defineConsts()
     {
         $this->_defineConst('JAS_ROOT', dirname(__FILE__));
@@ -103,5 +67,65 @@ class CaptainJas
         if (!defined($name)) {
             define($name, $value);
         }
+    }
+
+    static public function p($key)
+    {
+        if (PHP_SAPI === 'cli') {
+            $_GET = getopt('', array($key . '::'));
+        }
+        return isset($_GET[$key]) ? $_GET[$key] : null;
+    }
+
+    public function getHook($ns, $class, $args = array())
+    {
+        return $this->_getClass($ns, 'hook', $class, $args);
+    }
+
+    /**
+     * @param string $ns namespace code (jas only for now)
+     * @param string $type type of the connector (hook, watcher, sender, ...)
+     * @param string $class class to load (basecamp_events_message, subversion_commit_message,...)
+     * @param array $args params to pass to connector constructor
+     * @throws \BadMethodCallException
+     */
+    protected function _getClass($ns, $type, $class, $args = array())
+    {
+        if ($ns != 'jas') {   //@TODO implement extension mechanism
+            throw new \BadMethodCallException('@TODO implement extension mechanism');
+        } else {
+            $namespace = '\\CaptainJas\\Connectors\\';
+        }
+
+        $typePath = $this->ucWords($type);
+        $className = $this->ucWords($class);
+
+        $fullClass = $namespace . $typePath . '\\' . $className;
+
+        if (!class_exists($fullClass)) {
+            throw new \BadMethodCallException('Class ' . $fullClass . ' not found.');
+        }
+
+        $rc = new \ReflectionClass($fullClass);
+        return $rc->newInstanceArgs($args);
+    }
+
+    /**
+     * @param $type
+     * @return mixed
+     */
+    protected function ucWords($type)
+    {
+        return str_replace(' ', '\\', ucwords(str_replace('_', ' ', $type)));
+    }
+
+    public function getWatcher($ns, $class, $args = array())
+    {
+        return $this->_getClass($ns, 'watcher', $class, $args);
+    }
+
+    public function getSender($ns, $class, $args = array())
+    {
+        return $this->_getClass($ns, 'sender', $class, $args);
     }
 }

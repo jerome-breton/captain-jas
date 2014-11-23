@@ -4,7 +4,7 @@ namespace CaptainJas;
 use CaptainJas\Connectors\Hook\HookAbstract;
 use CaptainJas\Connectors\Sender\SenderAbstract;
 
-require_once('CaptainJas.php');
+require_once('..\CaptainJas.php');
 $captain = new CaptainJas();
 $hookname = CaptainJas::p('hook');
 

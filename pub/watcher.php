@@ -4,7 +4,7 @@ namespace CaptainJas;
 use CaptainJas\Connectors\Sender\SenderAbstract;
 use CaptainJas\Connectors\Watcher\WatcherAbstract;
 
-require_once('CaptainJas.php');
+require_once('..\CaptainJas.php');
 $captain = new CaptainJas();
 $watchername = CaptainJas::p('watcher');
 

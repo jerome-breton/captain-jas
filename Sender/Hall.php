@@ -37,7 +37,7 @@ class Hall extends SenderAbstract{
      * @param  \CaptainJas\Utils\Message    $message
      * @return null
      */
-    public function send(\CaptainJas\Utils\Message $message){
+    public function sendOne(\CaptainJas\Utils\Message $message){
         if($message->getText()) {
 
             $data = array(

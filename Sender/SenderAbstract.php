@@ -8,5 +8,15 @@ namespace CaptainJas\Sender;
 
 abstract class SenderAbstract
 {
-    abstract public function send(\CaptainJas\Utils\Message $message);
+    public function send($messages){
+        if(!empty($messages) && is_array($messages)){
+            foreach($messages as $message){
+                $this->sendOne($message);
+            }
+        }
+        
+        return $this;
+    }
+    
+    abstract public function sendOne(\CaptainJas\Utils\Message $message);
 }

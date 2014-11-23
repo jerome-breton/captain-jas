@@ -108,6 +108,41 @@ abstract class Subversion extends WatcherAbstract{
         return $commits;
     }
     
+    protected function _getLocks()
+    {
+        $options = array(
+            'http' => array(
+                'header'  => "Content-type: text/xml\r\n" . $this->_getAuthorizationHeader(),
+                'method'  => 'REPORT',
+                'content' => '<?xml version="1.0" encoding="utf-8"?><S:get-locks-report xmlns:S="svn:" xmlns:D="DAV:"></S:get-locks-report>',
+            ),
+        );
+
+        $context = stream_context_create($options);
+        $response = file_get_contents($this->_svnurl, false, $context);
+
+        $locksXml = simplexml_load_string($response);
+
+        $lockItems = $locksXml->xpath('//S:lock');
+        $locks = array();
+        foreach ($lockItems as $lockItem) {
+            $token = $lockItem->xpath('./S:token');
+            $path = $lockItem->xpath('./S:path');
+            $comment = $lockItem->xpath('./S:comment');
+            $author = $lockItem->xpath('./S:owner');
+            $date = $lockItem->xpath('./S:creationdate');
+            
+            $locks[(string)reset($token)] = array(
+                'path'    => (string)reset($path),
+                'comment' => (string)reset($comment),
+                'author'  => (string)reset($author),
+                'date'    => (string)reset($date),
+            );
+        }
+
+        return $locks;
+    }
+    
     protected function _getDataIdentifier(){
         return md5(join('|',array($this->_svnurl, $this->_svnuser, $this->_svnpass, $this->_getClass())));
     }

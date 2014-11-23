@@ -11,7 +11,7 @@ abstract class Gitlab extends HookAbstract
         //_processPush, _processMergeRequest, _processIssue...
         $methodName = '_process' . str_replace(' ', '', ucwords(str_replace('_', ' ', $request['object_kind'])));
         if (is_callable(array($this, $methodName))) {
-            return $this->$methodName($request['object_attributes']);
+            return array($this->$methodName($request['object_attributes']));
         }
         return false;
     }

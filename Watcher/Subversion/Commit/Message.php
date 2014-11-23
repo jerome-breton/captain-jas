@@ -63,6 +63,27 @@ class Message extends \CaptainJas\Watcher\Subversion\Commit{
         
         return $html;
     }
+    
+    protected function _processLockChanges($createdLocks, $releasedLocks, $namePad = 20){
+        $html = '';
+        if(!empty($createdLocks)){
+            $html .= '<b>New locked path:</b><br>';
+            foreach($createdLocks as $lock){
+                $html .= '<i>' . substr(str_pad($lock['author'], $namePad), 0, $namePad) . '</i> ' . $lock['path'] . '<br>';
+            }
+        }
+        if(!empty($releasedLocks)){
+            $html .= '<b>Lock have been released:</b><br>';
+            foreach($createdLocks as $lock){
+                $html .= '<i>' . substr(str_pad($lock['author'], $namePad), 0, $namePad) . '</i> ' . $lock['path'] . '<br>';
+            }
+        }
+        
+        if($html){
+            return new \CaptainJas\Utils\Message($html, 'Path locks');
+        }
+        return false;
+    }
 } 
 
 

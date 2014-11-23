@@ -2,9 +2,16 @@
 /**
  * Api Doc https://svn.apache.org/repos/asf/subversion/trunk/notes/http-and-webdav/webdav-protocol
  */
-namespace CaptainJas\Watcher;
+namespace CaptainJas\Connectors\Watcher;
 
-abstract class Subversion extends WatcherAbstract{
+use CaptainJas\Connectors\Watcher;
+
+/**
+ * Class Subversion
+ * @package CaptainJas\Connectors\Watcher
+ */
+abstract class Subversion extends WatcherAbstract
+{
 
     const ACTION_ADD = 'added-path';
     const ACTION_MOD = 'modified-path';
@@ -16,13 +23,24 @@ abstract class Subversion extends WatcherAbstract{
     protected $_svnpass;
     protected $_svnclient;
 
-    public function __construct($url, $user = false, $pass = false){
+    /**
+     * @param $url
+     * @param bool $user
+     * @param bool $pass
+     */
+    public function __construct($url, $user = false, $pass = false)
+    {
         $this->_svnurl = $url;
         $this->_svnuser = $user;
         $this->_svnpass = $pass;
         parent::__construct();
     }
 
+    /**
+     * @param bool $vfrom
+     * @param bool $vto
+     * @return array
+     */
     protected function _getRepositoryLogs($vfrom = false, $vto = false)
     {
         if (!$vfrom) {
@@ -38,8 +56,8 @@ abstract class Subversion extends WatcherAbstract{
 
         $options = array(
             'http' => array(
-                'header'  => "Content-type: text/xml\r\n" . $this->_getAuthorizationHeader(),
-                'method'  => 'REPORT',
+                'header' => "Content-type: text/xml\r\n" . $this->_getAuthorizationHeader(),
+                'method' => 'REPORT',
                 'content' =>
                     '<?xml version="1.0" encoding="utf-8"?> <S:log-report xmlns:S="svn:"> <S:start-revision>' . $vfrom
                     . '</S:start-revision><S:end-revision>' . $vto
@@ -65,16 +83,16 @@ abstract class Subversion extends WatcherAbstract{
                 $action = str_replace('<S:', '', $path->getName());
                 $changes[] = array(
                     'node-kind' => (string)reset($nodeKind),
-                    'action'    => $action,
-                    'path'      => (string)$path
+                    'action' => $action,
+                    'path' => (string)$path
                 );
             }
 
             $commits[] = array(
                 'version' => (string)reset($version),
                 'comment' => (string)reset($comment),
-                'author'  => (string)reset($author),
-                'date'    => (string)reset($date),
+                'author' => (string)reset($author),
+                'date' => (string)reset($date),
                 'changes' => $changes
             );
         }
@@ -82,7 +100,11 @@ abstract class Subversion extends WatcherAbstract{
         return $commits;
     }
 
-    protected function _getVersion(){
+    /**
+     * @return int
+     */
+    protected function _getVersion()
+    {
         $options = array(
             'http' => array(
                 'header' => "Content-type: text/xml\r\n" . $this->_getAuthorizationHeader(),
@@ -100,17 +122,23 @@ abstract class Subversion extends WatcherAbstract{
         return (int)$response;
     }
 
+    /**
+     * @return string
+     */
     protected function _getAuthorizationHeader()
     {
         return 'Authorization: Basic ' . base64_encode($this->_svnuser . ":" . $this->_svnpass) . "\r\n";
     }
 
+    /**
+     * @return array
+     */
     protected function _getLocks()
     {
         $options = array(
             'http' => array(
-                'header'  => "Content-type: text/xml\r\n" . $this->_getAuthorizationHeader(),
-                'method'  => 'REPORT',
+                'header' => "Content-type: text/xml\r\n" . $this->_getAuthorizationHeader(),
+                'method' => 'REPORT',
                 'content' => '<?xml version="1.0" encoding="utf-8"?><S:get-locks-report xmlns:S="svn:" xmlns:D="DAV:"></S:get-locks-report>',
             ),
         );
@@ -130,17 +158,21 @@ abstract class Subversion extends WatcherAbstract{
             $date = $lockItem->xpath('./S:creationdate');
 
             $locks[(string)reset($token)] = array(
-                'path'    => (string)reset($path),
+                'path' => (string)reset($path),
                 'comment' => (string)reset($comment),
-                'author'  => (string)reset($author),
-                'date'    => (string)reset($date),
+                'author' => (string)reset($author),
+                'date' => (string)reset($date),
             );
         }
 
         return $locks;
     }
 
-    protected function _getDataIdentifier(){
-        return md5(join('|',array($this->_svnurl, $this->_svnuser, $this->_svnpass, $this->_getClass())));
+    /**
+     * @return string
+     */
+    protected function _getDataIdentifier()
+    {
+        return md5(join('|', array($this->_svnurl, $this->_svnuser, $this->_svnpass, $this->_getClass())));
     }
 }

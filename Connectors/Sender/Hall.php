@@ -3,16 +3,27 @@
  * Api Doc https://hall.com/docs/integrations/generic/?uuid=5470233a57f060d89b00007b
  */
 
-namespace CaptainJas\Sender;
+namespace CaptainJas\Connectors\Sender;
 
+use CaptainJas\Connectors\Sender;
 
-class Hall extends SenderAbstract{
-
+/**
+ * Class Hall
+ * @package CaptainJas\Connectors\Sender
+ */
+class Hall extends Message
+{
     protected $_roomUrl;
     protected $_botName;
     protected $_botIcon;
 
-    public function __construct($roomUrl, $botName, $botIcon){
+    /**
+     * @param $roomUrl
+     * @param $botName
+     * @param $botIcon
+     */
+    public function __construct($roomUrl, $botName, $botIcon)
+    {
         $this->_roomUrl = $roomUrl;
         $this->_botName = $botName;
         $this->_botIcon = $botIcon;
@@ -34,11 +45,14 @@ class Hall extends SenderAbstract{
      *   <strong>
      *   <track>  kind, label, src, srclang
      *
-     * @param  \CaptainJas\Utils\Message    $message
+     * @param  \CaptainJas\Utils\Message $message
      * @return null
      */
-    public function sendOne(\CaptainJas\Utils\Message $message){
-        if($message->getText()) {
+    public function sendOne(/** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
+        \CaptainJas\Utils\Message $message
+    )
+    {
+        if ($message->getText()) {
 
             $data = array(
                 'title' => $this->_botName . ($message->getTitle() ? ' - ' . $message->getTitle() : ''),

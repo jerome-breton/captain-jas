@@ -1,0 +1,59 @@
+{
+  "connectors": {
+    "jas": "\\CaptainJas\\Connectors"
+  },
+  "hooks": {
+    "gitlabToHall": {
+      "hook": {
+        "connector": "jas|gitlab_message"
+      },
+      "sender": {
+        "connector": "jas|hall",
+        "params": [
+          "https://hall.com/api/1/services/generic/<roomId>",
+          "GitLab",
+          "https://about.gitlab.com/images/gitlab_logo.png"
+        ]
+      }
+    }
+  },
+  "watchers": {
+    "subversionToHall": {
+      "watcher": {
+        "connector": "jas|subversion_commit_message",
+        "params": [
+          "<repo url without /trunk/>",
+          "<svn username if needed>",
+          "<svn password>"
+        ]
+      },
+      "sender": {
+        "connector": "jas|hall",
+        "params": [
+          "https://hall.com/api/1/services/generic/<roomId>",
+          "Subversion",
+          "https://subversion.apache.org/images/svn-square.jpg"
+        ]
+      }
+    },
+    "basecampToHall": {
+      "watcher": {
+        "connector": "jas|basecamp_events_message",
+        "params": [
+          "<account id>",
+          "<project id>",
+          "<user email>",
+          "<user password>"
+        ]
+      },
+      "sender": {
+        "connector": "jas|hall",
+        "params": [
+          "https://hall.com/api/1/services/generic/<roomId>",
+          "Basecamp",
+          "https://avatars1.githubusercontent.com/u/13131?v=3&s=200"
+        ]
+      }
+    }
+  }
+}

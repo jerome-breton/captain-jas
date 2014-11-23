@@ -18,7 +18,7 @@
     }
   },
   "watchers": {
-    "subversionToHall": {
+    "subversionCommitToHall": {
       "watcher": {
         "connector": "jas|subversion_commit_message",
         "params": [
@@ -31,11 +31,29 @@
         "connector": "jas|hall",
         "params": [
           "https://hall.com/api/1/services/generic/<roomId>",
-          "Subversion",
+          "Subversion commits",
           "https://subversion.apache.org/images/svn-square.jpg"
         ]
       }
     },
+    "subversionLocksToHall": {
+          "watcher": {
+            "connector": "jas|subversion_lock_message",
+            "params": [
+              "<repo url without /trunk/>",
+              "<svn username if needed>",
+              "<svn password>"
+            ]
+          },
+          "sender": {
+            "connector": "jas|hall",
+            "params": [
+              "https://hall.com/api/1/services/generic/<roomId>",
+              "Subversion locks",
+              "https://subversion.apache.org/images/svn-square.jpg"
+            ]
+          }
+        },
     "basecampToHall": {
       "watcher": {
         "connector": "jas|basecamp_events_message",

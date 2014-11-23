@@ -36,7 +36,7 @@ class Message extends Commit
         $message .= join('<br>', $messageArray);
         $message .= '';
 
-        return new \CaptainJas\Utils\Message($message, 'New commit');
+        return new \CaptainJas\Utils\Message($message);
     }
 
     /**
@@ -57,6 +57,11 @@ class Message extends Commit
         ));
     }
 
+    /**
+     * @param $changes
+     * @param $linePrefix
+     * @return string
+     */
     protected function _displayCommitFiles($changes, $linePrefix)
     {
         $html = '';
@@ -81,34 +86,14 @@ class Message extends Commit
         return $html;
     }
 
+    /**
+     * @param $path
+     * @return string
+     */
     protected function _displayPathLink($path)
     {
         return '<a target="' . $this->_getDataIdentifier() . '" href="' . $this->_svnurl . $path . '">'
         . $path . '</a>';
-    }
-
-    protected function _processLockChanges($createdLocks, $releasedLocks, $namePad = 20)
-    {
-        $html = '';
-        if (!empty($createdLocks)) {
-            $html .= '<b>New locked path:</b><br>';
-            foreach ($createdLocks as $lock) {
-                $html .= '<i>' . substr(str_pad($lock['author'], $namePad), 0, $namePad) . '</i> '
-                    . $this->_displayPathLink($lock['path']) . '<br>';
-            }
-        }
-        if (!empty($releasedLocks)) {
-            $html .= '<b>Lock have been released:</b><br>';
-            foreach ($createdLocks as $lock) {
-                $html .= '<i>' . substr(str_pad($lock['author'], $namePad), 0, $namePad) . '</i> '
-                    . $this->_displayPathLink($lock['path']) . '<br>';
-            }
-        }
-
-        if ($html) {
-            return new \CaptainJas\Utils\Message($html, 'Path locks');
-        }
-        return false;
     }
 }
 

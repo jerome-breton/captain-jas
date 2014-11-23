@@ -133,6 +133,55 @@ string can be passed in command line :
 **watcher.php** as only one parameter `watcher` that must correspond to a watcher defined in config.json. 
 If `watcher` is ommited, then every watchers are called in sequence.
 
+
+Connectors
+----------
+
+###Hooks
+
+**jas|gitlab_message** 
+
+Will catch GitLab post commit hooks to send messages in case of push and merge request
+creation or update. This connector does not need params.
+
+###Senders
+
+**jas|hall** 
+
+Will send messages to a Hall Chat Room. You need to give this parameters :
+- The complete api room url (ie: https://hall.com/api/1/services/generic/<roomId>). This url can be found
+in the target chat room in choosing to add *Incomming Webhooks Integration*.
+- The bot name. This will appear in chat as the name of the user
+- The bot icon url. Hall recommand not to give a picture bigger than 100x100.
+
+###Watchers
+
+**jas|basecamp_events_message** 
+
+Will check basecamp events feed and give you new events on change. This connector uses this parameters :
+- The account id (this can be found in basecamp url : https://basecamp.com/{account id}/projects/{project id}
+- The project id (this can be found in basecamp url : https://basecamp.com/{account id}/projects/{project id}
+- Your username
+- Your password
+- (optional) The user agent string pushed to Basecamp that identifies this application. Defaults to : 
+CaptainJas (jerome.breton@gmail.com https://github.com/jerome-breton/captain-jas/)
+- (optional) Base url (defaults to https://basecamp.com)
+
+**jas|subversion_commit_message**
+
+Will check a subversion repository and alert you of new commits. This connector uses this parameters :
+- The repository root url without /trunk/
+- (optional) svn username
+- (optional) svn password
+
+**jas|subversion_locks_message**
+
+Will check a subversion repository and alert you of new locks or locks releases. This connector uses this 
+parameters :
+- The repository root url without /trunk/
+- (optional) svn username
+- (optional) svn password
+
 Framework
 ---------
 
@@ -160,7 +209,6 @@ You must implement `process()` that will be called when watcher is triggered.
 Nothing to say for now. You must implement `send($data)` that will be called when hook is triggered.
 
 **Sender\Message** is an abstract class implementing a message sender.
-
 
 
 

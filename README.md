@@ -144,6 +144,12 @@ Connectors
 Will catch GitLab post commit hooks to send messages in case of push and merge request
 creation or update. This connector does not need params.
 
+**jas|jenkins_message** 
+
+Will catch [Jenkins notification plugin](https://wiki.jenkins-ci.org/display/JENKINS/Notification+Plugin)
+notifications to send messages. This connector does not need params. But will only work with JSON format 
+and HTTP protocol.
+
 ###Senders
 
 **jas|hall** 

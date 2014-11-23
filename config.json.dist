@@ -15,6 +15,19 @@
           "https://about.gitlab.com/images/gitlab_logo.png"
         ]
       }
+    },
+    "jenkinsToHall": {
+      "hook": {
+        "connector": "jas|jenkins_message"
+      },
+      "sender": {
+        "connector": "jas|hall",
+        "params": [
+          "https://hall.com/api/1/services/generic/<roomId>",
+          "Jenkins",
+          "http://jenkins-ci.org/sites/default/files/images/headshot.png"
+        ]
+      }
     }
   },
   "watchers": {

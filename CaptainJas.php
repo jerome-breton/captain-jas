@@ -3,6 +3,8 @@ namespace CaptainJas;
 
 class CaptainJas
 {
+    protected $_config = null;
+
     public function __construct()
     {
         $this->_registerAutoload();
@@ -77,7 +79,19 @@ class CaptainJas
         return isset($_GET[$key]) ? $_GET[$key] : null;
     }
 
-    public function getHook($ns, $class, $args = array())
+    public function getConfig()
+    {
+        if (!$this->_config) {
+            $json_data = file_get_contents('config.json');
+            if ($json_data === false) {
+                throw new \RuntimeException('You must deploy a config.json file. Try to copy config.json.dist as a basis');
+            }
+            $this->_config = json_decode($json_data);
+        }
+        return $this->_config;
+    }
+
+    public function getHook($ns, $class = '', $args = array())
     {
         return $this->_getClass($ns, 'hook', $class, $args);
     }
@@ -89,8 +103,12 @@ class CaptainJas
      * @param array $args params to pass to connector constructor
      * @throws \BadMethodCallException
      */
-    protected function _getClass($ns, $type, $class, $args = array())
+    protected function _getClass($ns, $type, $class = '', $args = array())
     {
+        if (!$class) {
+            list($ns, $class) = explode('|', $ns);
+        }
+
         if ($ns != 'jas') {   //@TODO implement extension mechanism
             throw new \BadMethodCallException('@TODO implement extension mechanism');
         } else {

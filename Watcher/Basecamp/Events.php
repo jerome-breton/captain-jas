@@ -21,6 +21,25 @@ abstract class Events extends Basecamp
 
     public function process()
     {
-        var_dump($this->_request('events'));
+        $since = $this->_getData('since');
+        $responses = array();
+        
+        if(is_null($since)){
+            $since = date('c');
+        }
+        
+        $events = $this->_request('events', array('since' => urlencode($since)));
+        
+        $response = $this->_processEvents($events);
+        
+        if(!empty($response)){
+            $responses[] = $response;
+        }
+        
+        $this->_saveData('since', $since);
+        
+        return $responses;
     }
+    
+    abstract protected function _processEvents($events);
 }

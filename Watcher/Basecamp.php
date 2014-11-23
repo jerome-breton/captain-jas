@@ -64,26 +64,32 @@ abstract class Basecamp extends \CaptainJas\Watcher\WatcherAbstract
      * @param array $params HTTP params to add
      * @param string $method HTTP method (defaults to GET)
      * @param array $data body data to be json-encoded
-     * @param string $api api version to compose url (defaults to /api/v1/)
-     * @param string $resourceFormat response format (defaults to json)
+     * @param string $api api version to compose url (defaults to /api/v1)
      * @return string
      */
-    protected function _request($resource, $params = array(), $method = 'GET', $data = array(), $api = '/api/v1/',
-        $resourceFormat = 'json'
-    )
+    protected function _request($resource, $params = array(), $method = 'GET', $data = array(), $api = '/api/v1')
     {
         $options = array(
             'http' => array(
-                'header'  => "Content-type: text/json\r\n" . $this->_getAuthorizationHeader(),
+                'header'  => "Content-type: text/json\r\n" . $this->_getAuthorizationHeader() . $this->_getUserAgentHeader(),
                 'method'  => $method,
                 'content' => json_encode($data),
             ),
         );
 
         $context = stream_context_create($options);
-        $response = file_get_contents($this->_getUrl($resource, $params, $api, $resourceFormat), false, $context);
+        $response = file_get_contents($this->_getUrl($resource, $params, $api), false, $context);
 
-        return $response;
+        return json_decode($response);
+    }
+
+    /**
+     * Return HTTP user agent header
+     * @return string
+     */
+    protected function _getUserAgentHeader()
+    {
+        return 'User-Agent: '.$this->_userAgent . "\r\n";
     }
 
     /**
@@ -100,11 +106,11 @@ abstract class Basecamp extends \CaptainJas\Watcher\WatcherAbstract
      *
      * @param string $resource Resource to request (projects, events, ...)
      * @param array $params HTTP params to add
-     * @param string $api api version to compose url (defaults to /api/v1/)
+     * @param string $api api version to compose url (defaults to /api/v1)
      * @param string $resourceFormat response format (defaults to json)
      * @return string
      */
-    protected function _getUrl($resource, $params = array(), $api = '/api/v1/', $resourceFormat = 'json')
+    protected function _getUrl($resource, $params = array(), $api = '/api/v1', $resourceFormat = 'json')
     {
         return join(
             '', array(

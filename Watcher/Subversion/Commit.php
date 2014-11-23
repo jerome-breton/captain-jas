@@ -27,7 +27,7 @@ abstract class Commit extends \CaptainJas\Watcher\Subversion{
         if(!is_null($lastVersion)){
             $response = $this->_processCommit($this->_getRepositoryLogs());
             if(!empty($response)){
-                $responsse[] = $response;
+                $responses[] = $response;
             }
         }
         

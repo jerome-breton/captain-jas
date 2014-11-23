@@ -1,13 +1,8 @@
 <?php
-/**
- * Add this file to Gitlab commit hook with http://<host>/gitlabToHall.php?roomurl=https://hall.com/api/1/services/generic/<roomid>
- *
- * The room Url is accessible by clicking Integration in Hall room, then choosing Incoming Webhooks
- */
 namespace CaptainJas;
 
-use CaptainJas\Connectors\Hook\Gitlab;
-use CaptainJas\Connectors\Sender\Hall;
+use CaptainJas\Connectors\Hook\HookAbstract;
+use CaptainJas\Connectors\Sender\SenderAbstract;
 
 require_once('CaptainJas.php');
 $captain = new CaptainJas();
@@ -15,32 +10,42 @@ $hookname = CaptainJas::p('hook');
 
 if (!$hookname) {
     dieInHelp();
-}
-if (!isset($captain->getConfig()->hooks->$hookname)) {
-    throw new \InvalidArgumentException($hookname . ' is not defined in config.json');
-}
-
-$hookConfig = $captain->getConfig()->hooks->$hookname;
-
-if (isset($hookConfig->hook->params)) {
-    $params = $hookConfig->hook->params;
 } else {
-    $params = array();
+    runHook($hookname, $captain);
 }
-/** @var Gitlab $hook */
-$hook = $captain->getHook($hookConfig->hook->connector, '', $params);
 
-if (isset($hookConfig->sender->params)) {
-    $params = $hookConfig->sender->params;
-} else {
-    $params = array();
-}
-/** @var Hall $sender */
-$sender = $captain->getSender($hookConfig->sender->connector, '', $params);
+/**
+ * @param $hookname
+ * @param $captain
+ */
+function runHook($hookname, $captain)
+{
+    if (!isset($captain->getConfig()->hooks->$hookname)) {
+        throw new \InvalidArgumentException($hookname . ' is not defined in config.json');
+    }
 
-$data = $hook->process();
-if ($data) {
-    $sender->send($data);
+    $hookConfig = $captain->getConfig()->hooks->$hookname;
+
+    if (isset($hookConfig->hook->params)) {
+        $params = $hookConfig->hook->params;
+    } else {
+        $params = array();
+    }
+    /** @var HookAbstract $hook */
+    $hook = $captain->getHook($hookConfig->hook->connector, '', $params);
+
+    if (isset($hookConfig->sender->params)) {
+        $params = $hookConfig->sender->params;
+    } else {
+        $params = array();
+    }
+    /** @var SenderAbstract $sender */
+    $sender = $captain->getSender($hookConfig->sender->connector, '', $params);
+
+    $data = $hook->process();
+    if ($data) {
+        $sender->send($data);
+    }
 }
 
 function dieInHelp()

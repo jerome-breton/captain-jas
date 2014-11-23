@@ -40,7 +40,6 @@ abstract class Gitlab extends HookAbstract
             $body = @file_get_contents('php://input');
         }
         $request = json_decode($body, true);
-        var_dump($body, $request);
 
         if (empty($request['object_kind'])) {
             $request = array(

@@ -1,6 +1,6 @@
 <?php
 /**
- *
+ * Api Doc https://hall.com/docs/integrations/generic/?uuid=5470233a57f060d89b00007b
  */
 
 namespace CaptainJas\Sender;

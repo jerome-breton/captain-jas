@@ -1,11 +1,6 @@
 <?php
 /**
- * ${File_Description}
- *
- * @category   ${NameSpace}
- * @package    ${NameSpace}_${NomDuModule}
- * @author     jbreton
- * @date       23/11/14 10:23
+ * Api doc : https://github.com/basecamp/bcx-api/blob/master/sections/events.md
  */
 
 namespace CaptainJas\Watcher\Basecamp;
@@ -23,23 +18,23 @@ abstract class Events extends Basecamp
     {
         $since = $this->_getData('since');
         $responses = array();
-        
+
         if(is_null($since)){
             $since = date('c');
         }
-        
+
         $events = $this->_request('events', array('since' => urlencode($since)));
-        
+
         $response = $this->_processEvents($events);
-        
+
         if(!empty($response)){
             $responses[] = $response;
         }
-        
+
         $this->_saveData('since', $since);
-        
+
         return $responses;
     }
-    
+
     abstract protected function _processEvents($events);
 }

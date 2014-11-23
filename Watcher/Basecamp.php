@@ -1,4 +1,7 @@
 <?php
+/**
+ * Api doc https://github.com/basecamp/bcx-api
+ */
 namespace CaptainJas\Watcher;
 
 /**
@@ -84,21 +87,21 @@ abstract class Basecamp extends \CaptainJas\Watcher\WatcherAbstract
     }
 
     /**
-     * Return HTTP user agent header
-     * @return string
-     */
-    protected function _getUserAgentHeader()
-    {
-        return 'User-Agent: '.$this->_userAgent . "\r\n";
-    }
-
-    /**
      * Return HTTP basic auth header
      * @return string
      */
     protected function _getAuthorizationHeader()
     {
         return 'Authorization: Basic ' . base64_encode($this->_user . ":" . $this->_pass) . "\r\n";
+    }
+
+    /**
+     * Return HTTP user agent header
+     * @return string
+     */
+    protected function _getUserAgentHeader()
+    {
+        return 'User-Agent: ' . $this->_userAgent . "\r\n";
     }
 
     /**

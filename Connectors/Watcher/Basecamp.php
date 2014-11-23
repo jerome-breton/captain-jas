@@ -38,6 +38,7 @@ abstract class Basecamp extends WatcherAbstract
         $this->_pass = $password;
         $this->_userAgent = $ua;
         $this->_url = $url;
+        parent::__construct();
     }
 
     /**

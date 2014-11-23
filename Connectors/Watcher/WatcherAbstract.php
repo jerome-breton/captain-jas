@@ -11,7 +11,7 @@ use CaptainJas\Connectors\Watcher;
 
 abstract class WatcherAbstract extends HookAbstract
 {
-    private $_data = array();
+    private $_data = null;
     private $_file = null;
 
     public function __construct()
@@ -68,6 +68,9 @@ abstract class WatcherAbstract extends HookAbstract
 
     protected function _getData($key)
     {
+        if (!is_array($this->_data)) {
+            throw new \LogicException('$this->_data is not inited. Have you called parent::__construct() ?');
+        }
         return isset($this->_data[$key]) ? $this->_data[$key] : null;
     }
 }

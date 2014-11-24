@@ -23,7 +23,12 @@ abstract class Events extends Basecamp
             $since = date('c');
         }
 
-        $events = $this->_request('events', array('since' => urlencode($since)));
+        $events = $this->_request('events', array('since' => str_replace('+', '%2B', $since)));
+
+        if (!empty($events)) {
+            $firstEvent = reset($events);
+            $since = $firstEvent->created_at;
+        }
 
         $response = $this->_processEvents($events);
 

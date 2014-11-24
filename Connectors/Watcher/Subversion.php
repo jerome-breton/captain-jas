@@ -47,6 +47,8 @@ abstract class Subversion extends WatcherAbstract
             $vfrom = $this->_getData('version');
             if (!$vfrom) {
                 $vfrom = 0;
+            } else {
+                $vfrom++;
             }
         }
 
@@ -59,9 +61,13 @@ abstract class Subversion extends WatcherAbstract
                 'header' => "Content-type: text/xml\r\n" . $this->_getAuthorizationHeader(),
                 'method' => 'REPORT',
                 'content' =>
-                    '<?xml version="1.0" encoding="utf-8"?> <S:log-report xmlns:S="svn:"> <S:start-revision>' . $vfrom
-                    . '</S:start-revision><S:end-revision>' . $vto
-                    . '</S:end-revision><S:path></S:path><S:discover-changed-paths/></S:log-report>',
+                    '<?xml version="1.0" encoding="utf-8"?>
+                     <S:log-report xmlns:S="svn:">
+                         <S:start-revision>' . $vfrom . '</S:start-revision>
+                         <S:end-revision>' . $vto . '</S:end-revision>
+                         <S:path></S:path>
+                         <S:discover-changed-paths/>
+                     </S:log-report>',
             ),
         );
 

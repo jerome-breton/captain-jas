@@ -35,7 +35,7 @@ class Message extends Lock
         }
         if (!empty($releasedLocks)) {
             $html .= '<b>Lock have been released:</b><br>';
-            foreach ($createdLocks as $lock) {
+            foreach ($releasedLocks as $lock) {
                 $html .= '<i>' . substr(str_pad($lock['author'], $namePad), 0, $namePad) . '</i> '
                     . $this->_displayPathLink($lock['path']) . '<br>';
             }

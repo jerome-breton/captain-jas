@@ -18,12 +18,34 @@ class CaptainJas
      */
     public function __construct()
     {
-        $this->_registerAutoload();
         $this->_defineConsts();
+        $this->_registerAutoload();
     }
 
     /**
-     * Autoloader PSR-4
+     * Define constants
+     */
+    protected function _defineConsts()
+    {
+        $this->_defineConst('JAS_ROOT', dirname(__FILE__));
+        $this->_defineConst('DS', DIRECTORY_SEPARATOR);
+    }
+
+    /**
+     * Define a constant if not already defined
+     *
+     * @param string $name Name of the const to define
+     * @param string $value Value of the const
+     */
+    protected function _defineConst($name, $value)
+    {
+        if (!defined($name)) {
+            define($name, $value);
+        }
+    }
+
+    /**
+     * Autoloader PSR-4 + composer
      *
      * After registering this autoload function with SPL, the following line
      * would cause the function to attempt to load the \CaptainJas\Foo\Bar\Baz\Qux class
@@ -33,6 +55,11 @@ class CaptainJas
      */
     protected function _registerAutoload()
     {
+        $composerAutoload = JAS_ROOT . DS . 'vendor' . DS . 'autoload.php';
+        if (file_exists($composerAutoload)) {
+            require $composerAutoload;
+        }
+
         /**
          * @param string $class The fully-qualified class name.
          * @return void
@@ -67,28 +94,6 @@ class CaptainJas
                 }
             }
         );
-    }
-
-    /**
-     * Define constants
-     */
-    protected function _defineConsts()
-    {
-        $this->_defineConst('JAS_ROOT', dirname(__FILE__));
-        $this->_defineConst('DS', DIRECTORY_SEPARATOR);
-    }
-
-    /**
-     * Define a constant if not already defined
-     *
-     * @param string $name Name of the const to define
-     * @param string $value Value of the const
-     */
-    protected function _defineConst($name, $value)
-    {
-        if (!defined($name)) {
-            define($name, $value);
-        }
     }
 
     /**

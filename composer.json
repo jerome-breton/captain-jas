@@ -1,0 +1,12 @@
+{
+  "name": "jerome-breton/captain-jas",
+  "description": "A really light php hooking and watcher system to inter-operate systems.",
+  "license": "GNU GENERAL PUBLIC LICENSE",
+  "authors": [
+    {
+      "name": "Jerome Breton",
+      "email": "jerome.breton@gmail.com"
+    }
+  ],
+  "require": {}
+}

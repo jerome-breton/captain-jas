@@ -8,5 +8,18 @@
       "email": "jerome.breton@gmail.com"
     }
   ],
-  "require": {}
+  "autoload": {
+    "psr-0": {
+      "CaptainJas\\CaptainJas\\": "/"
+    }
+  },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/Devristo/phpws"
+    }
+  ],
+  "require": {
+    "devristo/phpws": "dev-master"
+  }
 }

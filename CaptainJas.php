@@ -4,6 +4,7 @@ namespace CaptainJas;
 use CaptainJas\Connectors\Hook\HookAbstract;
 use CaptainJas\Connectors\Sender\SenderAbstract;
 use CaptainJas\Connectors\Watcher\WatcherAbstract;
+use CaptainJas\Connectors\Websocket\WebsocketAbstract;
 
 /**
  * Main Class
@@ -57,7 +58,7 @@ class CaptainJas
     {
         $composerAutoload = JAS_ROOT . DS . 'vendor' . DS . 'autoload.php';
         if (file_exists($composerAutoload)) {
-            require $composerAutoload;
+            require_once $composerAutoload;
         }
 
         /**
@@ -182,6 +183,19 @@ class CaptainJas
     protected function ucWords($type)
     {
         return str_replace(' ', '\\', ucwords(str_replace('_', ' ', $type)));
+    }
+
+    /**
+     * @param string $ns namespace code
+     * @param string $class class to load (basecamp_events_message, subversion_commit_message,...)
+     * @param array $args params to pass to connector constructor
+     * @return WebsocketAbstract of wanted class
+     *
+     * @throws \BadMethodCallException
+     */
+    public function getWebsocket($ns, $class = '', $args = array())
+    {
+        return $this->_getClass($ns, 'websocket', $class, $args);
     }
 
     /**

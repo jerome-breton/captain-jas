@@ -77,20 +77,25 @@ abstract class WatcherAbstract extends HookAbstract
     }
 
     /**
-     * Save key value in state file
+     * Save $_data in state file
      *
+     * use with params is deprecated, use _setData() before instead
      * @param $key
      * @param $val
      */
-    protected function _saveData($key, $val)
+    protected function _saveData($key = null, $val = null)
     {
-        $this->_data[$key] = $val;
+        if ($key) {
+            $this->_data[$key] = $val;
+        }
         ftruncate($this->_getFile(), 0);
         rewind($this->_getFile());
 
         foreach ($this->_data as $key => $val) {
             fputcsv($this->_getFile(), array(trim($key), trim($val)));
         }
+
+        return $this;
     }
 
     /**
@@ -105,5 +110,17 @@ abstract class WatcherAbstract extends HookAbstract
             throw new \LogicException('$this->_data is not inited. Have you called parent::__construct() ?');
         }
         return isset($this->_data[$key]) ? $this->_data[$key] : null;
+    }
+
+    /**
+     * Save key value in $_data array
+     *
+     * @param $key
+     * @param $val
+     */
+    protected function _setData($key, $val)
+    {
+        $this->_data[$key] = $val;
+        return $this;
     }
 }
